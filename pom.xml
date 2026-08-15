@@ -10,8 +10,8 @@
 	</parent>
 	<groupId>com.roocbuilds</groupId>
 	<artifactId>api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name/>
+	<version>0.0.1</version>
+    <name>roocbuilds</name>
 	<description/>
 	<url/>
 	<licenses>
@@ -75,6 +75,20 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 👇 ESTO ES LO QUE OBLIGA A SPRING BOOT A GENERAR LAS CAPAS -->
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
+                    <classifier>exec</classifier>
+                </configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

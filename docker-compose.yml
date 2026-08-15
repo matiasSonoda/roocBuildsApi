@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # SERVICIO 1: Base de Datos PostgreSQL
+  # ==========================================
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: postgres_container
+    restart: always
+    environment:
+      POSTGRES_DB: roocbuilds_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpassword
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend-net
+    # Healthcheck: El corazón de la estabilidad
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d roocbuilds_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================
+  # SERVICIO 2: Tu API Spring Boot
+  # ==========================================
+  api:
+    build: .
+    container_name: spring_api_container
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/roocbuilds_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=secretpassword
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    networks:
+      - backend-net
+    # Dependencia Inteligente: Espera a que Postgres esté sano, no solo encendido
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+# ==========================================
+# RECURSOS GLOBALES (Volúmenes y Redes)
+# ==========================================
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  backend-net:
+    driver: bridge

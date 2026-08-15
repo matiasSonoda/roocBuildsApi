@@ -1,0 +1,10 @@
+# Excluir archivos y carpetas que no necesitamos en la imagen
+.git
+.mvn/wrapper/maven-wrapper.jar
+target/
+.idea/
+*.log
+*.sh
+.dockerignore
+Dockerfile
+docker-compose.yml
