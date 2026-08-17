@@ -5,12 +5,10 @@ import com.roocbuilds.api.model.dto.CharacterBuildResponseDTO;
 import com.roocbuilds.api.service.CharacterBuildService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/builds")
@@ -18,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class CharacterBuildController {
 
     private final CharacterBuildService buildService;
+    @Value("${api.admin.token}")
+    private String secretAdminToken;
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<CharacterBuildResponseDTO> createBuild
             (@Valid @RequestBody CharacterBuildRequestDTO requestDTO) {
 
@@ -28,5 +28,15 @@ public class CharacterBuildController {
 
         // Devolvemos el código 201 (Created) y el objeto creado
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBuild(@PathVariable Long id,
+                                            @RequestHeader(value="X-admin-Token", required=false) String token) {
+        if (token == null || !token.equals("X-admin-Token")){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        buildService.deleteBuild(id);
+        return ResponseEntity.noContent().build();
     }
 }

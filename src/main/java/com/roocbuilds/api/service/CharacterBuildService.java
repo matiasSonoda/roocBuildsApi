@@ -4,7 +4,6 @@ import com.roocbuilds.api.model.dto.CharacterBuildRequestDTO;
 import com.roocbuilds.api.model.dto.CharacterBuildResponseDTO;
 import com.roocbuilds.api.model.entity.CharacterBuild;
 import com.roocbuilds.api.repository.ICharacterBuildRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +33,10 @@ public class CharacterBuildService implements  ICharacterBuildService{
                 saveBuild.getContent(),
                 saveBuild.getCreatedAt()
         );
+    }
+
+    @Override
+    public void deleteBuild(Long id) {
+        buildRepository.deleteById(id);
     }
 }

@@ -7,4 +7,6 @@ import jakarta.validation.Valid;
 public interface ICharacterBuildService {
 
     public CharacterBuildResponseDTO createBuild(@Valid CharacterBuildRequestDTO requestDTO);
+
+    public void deleteBuild(Long id);
 }
