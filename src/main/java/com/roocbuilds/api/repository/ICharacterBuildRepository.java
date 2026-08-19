@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ICharacterBuildRepository  extends JpaRepository<CharacterBuild,Long> {
-
+    boolean existsById(Long id);
 }

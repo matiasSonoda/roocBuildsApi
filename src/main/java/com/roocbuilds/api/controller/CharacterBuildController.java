@@ -3,6 +3,7 @@ package com.roocbuilds.api.controller;
 import com.roocbuilds.api.model.dto.CharacterBuildRequestDTO;
 import com.roocbuilds.api.model.dto.CharacterBuildResponseDTO;
 import com.roocbuilds.api.service.CharacterBuildService;
+import com.roocbuilds.api.service.ICharacterBuildService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CharacterBuildController {
 
-    private final CharacterBuildService buildService;
+    private final ICharacterBuildService buildService;
+
     @Value("${api.admin.token}")
     private String secretAdminToken;
 
@@ -28,6 +30,11 @@ public class CharacterBuildController {
 
         // Devolvemos el código 201 (Created) y el objeto creado
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    @PatchMapping("/vote/{id}")
+    public ResponseEntity<Integer> patchVote(@PathVariable Long id) {
+        Integer newTotalVotes = buildService.patchVote(id);
+        return ResponseEntity.ok(newTotalVotes);
     }
 
     @DeleteMapping("/{id}")

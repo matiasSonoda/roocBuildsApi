@@ -4,8 +4,12 @@ import com.roocbuilds.api.model.dto.CharacterBuildRequestDTO;
 import com.roocbuilds.api.model.dto.CharacterBuildResponseDTO;
 import com.roocbuilds.api.model.entity.CharacterBuild;
 import com.roocbuilds.api.repository.ICharacterBuildRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +42,16 @@ public class CharacterBuildService implements  ICharacterBuildService{
     @Override
     public void deleteBuild(Long id) {
         buildRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public Integer patchVote(Long id) {
+        CharacterBuild build = buildRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("The build with ID " + id + "does not exist"));
+
+        build.setVotes(build.getVotes() + 1);
+        buildRepository.save(build);
+        return build.getVotes();
     }
 }

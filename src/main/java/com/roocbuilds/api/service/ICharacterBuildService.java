@@ -9,4 +9,6 @@ public interface ICharacterBuildService {
     public CharacterBuildResponseDTO createBuild(@Valid CharacterBuildRequestDTO requestDTO);
 
     public void deleteBuild(Long id);
+
+    public Integer patchVote(Long id);
 }
