@@ -11,15 +11,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/builds")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class CharacterBuildController {
 
     private final ICharacterBuildService buildService;
 
     @Value("${api.admin.token}")
     private String secretAdminToken;
+
+
+    @GetMapping("")
+    public ResponseEntity<List<CharacterBuildResponseDTO>> getBuildCharacter(){
+        return ResponseEntity.status(HttpStatus.OK).body(buildService.getBuildCharacter());
+    }
 
     @PostMapping("")
     public ResponseEntity<CharacterBuildResponseDTO> createBuild

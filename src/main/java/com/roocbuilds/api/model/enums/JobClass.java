@@ -1,5 +1,7 @@
 package com.roocbuilds.api.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum JobClass {
     LORD_KNIGHT("Lord Knight"),
     PALADIN("Paladin"),
@@ -19,5 +21,10 @@ public enum JobClass {
 
     JobClass(String nameClass){
         this.nameClass = nameClass;
+    }
+
+    @JsonValue
+    public String getNameClass(){
+        return nameClass;
     }
 }

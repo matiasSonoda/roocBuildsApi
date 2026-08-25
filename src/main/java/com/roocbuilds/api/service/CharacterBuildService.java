@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +17,21 @@ import java.util.Optional;
 public class CharacterBuildService implements  ICharacterBuildService{
 
     private final ICharacterBuildRepository buildRepository;
+
+    public List<CharacterBuildResponseDTO> getBuildCharacter(){
+        return buildRepository.findAll().stream().map(build -> {
+            return new CharacterBuildResponseDTO(
+                    build.getId(),
+                    build.getTitle(),
+                    build.getJobClass(),
+                    build.getBuildType(),
+                    build.getVotes(),
+                    build.getDescription(),
+                    build.getContent(),
+                    build.getCreatedAt()
+            );
+        }).toList();
+        };
 
     public CharacterBuildResponseDTO createBuild( CharacterBuildRequestDTO requestDTO) {
         CharacterBuild characterBuild = new CharacterBuild();

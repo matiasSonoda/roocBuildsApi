@@ -3,12 +3,17 @@ package com.roocbuilds.api.service;
 import com.roocbuilds.api.model.dto.CharacterBuildRequestDTO;
 import com.roocbuilds.api.model.dto.CharacterBuildResponseDTO;
 import jakarta.validation.Valid;
+import org.jspecify.annotations.Nullable;
+
+import java.util.List;
 
 public interface ICharacterBuildService {
 
-    public CharacterBuildResponseDTO createBuild(@Valid CharacterBuildRequestDTO requestDTO);
+    CharacterBuildResponseDTO createBuild(@Valid CharacterBuildRequestDTO requestDTO);
 
-    public void deleteBuild(Long id);
+    void deleteBuild(Long id);
 
-    public Integer patchVote(Long id);
+    Integer patchVote(Long id);
+
+    @Nullable List<CharacterBuildResponseDTO> getBuildCharacter();
 }
