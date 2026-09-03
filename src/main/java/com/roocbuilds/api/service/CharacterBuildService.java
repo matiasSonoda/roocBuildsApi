@@ -8,7 +8,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +21,9 @@ public class CharacterBuildService implements  ICharacterBuildService{
 
     private final ICharacterBuildRepository buildRepository;
 
-    public List<CharacterBuildResponseDTO> getBuildCharacter(){
+
+
+    public List<CharacterBuildResponseDTO> getAllBuildCharacter(){
         return buildRepository.findAll().stream().map(build -> {
             return new CharacterBuildResponseDTO(
                     build.getId(),
@@ -31,7 +36,24 @@ public class CharacterBuildService implements  ICharacterBuildService{
                     build.getCreatedAt()
             );
         }).toList();
-        };
+    }
+
+    @Override
+    public CharacterBuildResponseDTO getOneBuildCharacter(Long id) {
+        CharacterBuild foundBuild =  buildRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("The build with ID " + id + " does not exist")
+        );
+        return new CharacterBuildResponseDTO(
+                foundBuild.getId(),
+                foundBuild.getTitle(),
+                foundBuild.getJobClass(),
+                foundBuild.getBuildType(),
+                foundBuild.getVotes(),
+                foundBuild.getDescription(),
+                foundBuild.getContent(),
+                foundBuild.getCreatedAt()
+        );
+    }
 
     public CharacterBuildResponseDTO createBuild( CharacterBuildRequestDTO requestDTO) {
         CharacterBuild characterBuild = new CharacterBuild();

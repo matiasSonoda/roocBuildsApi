@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,8 +27,14 @@ public class CharacterBuildController {
 
 
     @GetMapping("")
-    public ResponseEntity<List<CharacterBuildResponseDTO>> getBuildCharacter(){
-        return ResponseEntity.status(HttpStatus.OK).body(buildService.getBuildCharacter());
+    public ResponseEntity<List<CharacterBuildResponseDTO>> getAllBuildCharacter(){
+        return ResponseEntity.status(HttpStatus.OK).body(buildService.getAllBuildCharacter());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CharacterBuildResponseDTO> getOneBuildCharacter(@PathVariable Long id){
+        CharacterBuildResponseDTO response = buildService.getOneBuildCharacter(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("")
