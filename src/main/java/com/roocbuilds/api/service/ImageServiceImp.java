@@ -1,41 +1,65 @@
 package com.roocbuilds.api.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
+import com.roocbuilds.api.model.dto.ImageUploadResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
+import java.util.Map;
 
+@Service
+@RequiredArgsConstructor
 public class ImageServiceImp implements IImageService{
 
-    private final String IMAGES_DIR= "images/";
+    private final Cloudinary cloudinary;
 
     @Override
-    public String saveImage(MultipartFile file) {
+    public ImageUploadResponse saveImage(MultipartFile file) {
         try{
-            Path imagesPath = Path.of(IMAGES_DIR);
-            if (!Files.exists(imagesPath)){
-                Files.createDirectories(imagesPath);
-            }
+            Map<?,?> uploadParams = ObjectUtils.asMap(
+                    "use_filename",true,
+                    "unique_filename",true,
+                    "overwrite",true,
+                    "transformation", new Transformation<>().width(1920).height(1080).crop("limit")
+                    );
 
-            String originalFileName = file.getOriginalFilename();
-            String extension = "";
-            if (originalFileName != null && originalFileName.contains(".")){
-                extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            }
+            Map uploadResult = cloudinary.uploader()
+                    .upload(
+                        file.getBytes(),
+                        uploadParams
+                        );
 
-            String uniqueFilename = UUID.randomUUID().toString() + extension;
+            String url = (String) uploadResult.get("url");
+            String publicId = (String) uploadResult.get("public_id");
+            Integer width = (Integer) uploadResult.get("width");
+            Integer height = (Integer) uploadResult.get("height");
 
-            Path filePath = imagesPath.resolve(uniqueFilename);
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            String feedUrl = cloudinary.url()
+                    .transformation(new Transformation<>()
+                            .width(800)
+                            .height(450)
+                            .crop("fill")
+                            .gravity("auto")
+                            .quality("auto")
+                            .fetchFormat("auto")
+                    )
+                    .generate(publicId);
 
-            return "http://localhost:8080/images/" + uniqueFilename;
+            String originalUrl = cloudinary.url()
+                    .transformation(new Transformation<>()
+                            .quality("auto")
+                            .fetchFormat("auto")
+                    ).generate(publicId);
+
+            return new ImageUploadResponse(publicId,feedUrl,originalUrl,width,height);
+
 
         }catch(IOException ex){
-            throw new RuntimeException("Error al guardar la imagen en el servidor", ex);
+            throw new RuntimeException("Error al guardar la imagen en el servidor: " + ex.getMessage(), ex);
         }
     }
 }

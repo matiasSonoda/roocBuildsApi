@@ -2,7 +2,6 @@ package com.roocbuilds.api.controller;
 
 import com.roocbuilds.api.model.dto.CharacterBuildRequestDTO;
 import com.roocbuilds.api.model.dto.CharacterBuildResponseDTO;
-import com.roocbuilds.api.service.CharacterBuildService;
 import com.roocbuilds.api.service.ICharacterBuildService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class CharacterBuildController {
 
     private final ICharacterBuildService buildService;
 
-    @Value("${api.admin.token}")
+    @Value("${ADMIN_ADMIN_TOKEN}")
     private String secretAdminToken;
 
 
@@ -56,7 +54,7 @@ public class CharacterBuildController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBuild(@PathVariable Long id,
                                             @RequestHeader(value="X-admin-Token", required=false) String token) {
-        if (token == null || !token.equals("X-admin-Token")){
+        if (token == null || !token.equals(secretAdminToken)){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         buildService.deleteBuild(id);

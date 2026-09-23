@@ -29,6 +29,8 @@ RUN java -Djarmode=tools -jar target/*-exec.jar extract --layers --launcher --de
   # Usamos JRE (Solo entorno de ejecución, no JDK) sobre Alpine Linux (pesa ~5MB)
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
+RUN mkdir -p /app/images
+RUN chmod 777 /app/images
 
   # Creamos un usuario sin privilegios por seguridad (Fase 4 adelantada)
 RUN addgroup -S spring && adduser -S spring -G spring
