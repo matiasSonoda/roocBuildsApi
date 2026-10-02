@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+node_modules/
+supabase/.branches/
+supabase/.temp/
+supabase/.bin/
+.agents/
