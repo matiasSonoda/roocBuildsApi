@@ -20,7 +20,7 @@ public class CharacterBuildController {
 
     private final ICharacterBuildService buildService;
 
-    @Value("${ADMIN_ADMIN_TOKEN}")
+    @Value("${admin.admin.token}")
     private String secretAdminToken;
 
 
